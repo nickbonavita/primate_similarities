@@ -19,14 +19,32 @@ const PRIMATES = [
   { id: "tarsius_syrichta",   common: "Philippine Tarsier",   species: "Tarsius syrichta",    emoji: "👁️", photo: "assets/primates/tarsius_syrichta.jpg" },
 ];
 
+const GENES = {
+  cytb: {
+    key: "cytb",
+    label: "Mitochondrial Cytochrome b",
+    folder: "fasta",
+    note: "Sequences: partial mitochondrial cytochrome b gene (~405 bp)",
+  },
+  cox1: {
+    key: "cox1",
+    label: "Mitochondrial COX1",
+    folder: "fasta/cox1",
+    note: "Sequences: mitochondrial COX1 coding sequence (~1.5 kb)",
+  },
+};
+
 /* ── State ──────────────────────────────────────────────────────────── */
-const sequenceCache = {};   // id → DNA string
+const sequenceCache = {};   // "gene:id" → DNA string
 const selected = [];        // 0, 1, or 2 primate ids
+let selectedGene = "cytb";
 
 /* ── DOM refs ───────────────────────────────────────────────────────── */
 const grid       = document.getElementById("primate-grid");
 const resultPanel = document.getElementById("result-content");
 const statusBar  = document.getElementById("status-bar");
+const geneSelect = document.getElementById("gene-select");
+const sequenceNote = document.getElementById("sequence-note");
 
 /* ── Render primate cards ───────────────────────────────────────────── */
 function renderGrid() {
@@ -76,6 +94,8 @@ function toggleSelection(id) {
 }
 
 function updateUI() {
+  const geneLabel = GENES[selectedGene].label;
+
   // Update card highlights
   document.querySelectorAll(".primate-card").forEach(card => {
     card.classList.toggle("selected", selected.includes(card.dataset.id));
@@ -83,18 +103,18 @@ function updateUI() {
 
   // Update status bar
   if (selected.length === 0) {
-    statusBar.textContent = "Click a primate to select it, then click another to compare.";
+    statusBar.textContent = `Gene: ${geneLabel}. Click a primate to select it, then click another to compare.`;
     statusBar.classList.remove("two-selected");
     showPlaceholder();
   } else if (selected.length === 1) {
     const p = PRIMATES.find(x => x.id === selected[0]);
-    statusBar.textContent = `${p.common} selected. Now select a second primate to compare.`;
+    statusBar.textContent = `${p.common} selected for ${geneLabel}. Now select a second primate to compare.`;
     statusBar.classList.remove("two-selected");
     showPlaceholder();
   } else {
     statusBar.classList.add("two-selected");
     const [a, b] = selected.map(id => PRIMATES.find(x => x.id === id));
-    statusBar.textContent = `Comparing ${a.common} and ${b.common}…`;
+    statusBar.textContent = `Comparing ${geneLabel} for ${a.common} and ${b.common}…`;
     computeAndShow(selected[0], selected[1]);
   }
 }
@@ -102,7 +122,7 @@ function updateUI() {
 /* ── Placeholder ────────────────────────────────────────────────────── */
 function showPlaceholder() {
   resultPanel.className = "result-placeholder";
-  resultPanel.innerHTML = `<span class="dna-icon">🔬</span><p>Select two primates<br/>to see their DNA similarity</p>`;
+  resultPanel.innerHTML = `<span class="dna-icon">🔬</span><p>Select two primates<br/>to compare ${GENES[selectedGene].label}</p>`;
 }
 
 function showLoading() {
@@ -117,14 +137,15 @@ function showError(msg) {
 
 /* ── FASTA loading & parsing ────────────────────────────────────────── */
 async function loadSequence(id) {
-  if (sequenceCache[id]) return sequenceCache[id];
-  const url = `fasta/${id}.fasta`;
+  const cacheKey = `${selectedGene}:${id}`;
+  if (sequenceCache[cacheKey]) return sequenceCache[cacheKey];
+  const url = `${GENES[selectedGene].folder}/${id}.fasta`;
   const resp = await fetch(url);
   if (!resp.ok) throw new Error(`Could not fetch ${url} (${resp.status})`);
   const text = await resp.text();
   const seq = parseFasta(text);
   if (!seq) throw new Error(`No sequence found in ${url}`);
-  sequenceCache[id] = seq;
+  sequenceCache[cacheKey] = seq;
   return seq;
 }
 
@@ -233,6 +254,7 @@ function renderResult(pA, pB, identity, matches, aligned) {
   const pct = identity.toFixed(1);
   const rel = relationshipLabel(identity);
   const barWidth = identity.toFixed(2);
+  const geneLabel = GENES[selectedGene].label;
 
   resultPanel.className = "result-data";
   resultPanel.innerHTML = `
@@ -256,7 +278,7 @@ function renderResult(pA, pB, identity, matches, aligned) {
     <hr class="result-divider" />
 
     <div class="similarity-block">
-      <div class="similarity-label">DNA Similarity</div>
+      <div class="similarity-label">${geneLabel} Similarity</div>
       <div class="similarity-value">${pct}<span class="similarity-suffix">%</span></div>
       <div class="progress-wrap" aria-label="${pct}% similarity">
         <div class="progress-fill" style="width:${barWidth}%"></div>
@@ -269,5 +291,17 @@ function renderResult(pA, pB, identity, matches, aligned) {
   `;
 }
 
+function updateGeneContext() {
+  sequenceNote.innerHTML = `${GENES[selectedGene].note} &bull; Similarity computed via percent identity after global alignment`;
+}
+
 /* ── Init ────────────────────────────────────────────────────────────── */
+geneSelect.addEventListener("change", () => {
+  selectedGene = geneSelect.value;
+  updateGeneContext();
+  updateUI();
+});
+
 renderGrid();
+updateGeneContext();
+updateUI();
