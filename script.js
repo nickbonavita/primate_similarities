@@ -280,6 +280,7 @@ function renderResult(pA, pB, identity, matches, aligned) {
     <div class="similarity-block">
       <div class="similarity-label">${geneLabel} Similarity</div>
       <div class="similarity-value">${pct}<span class="similarity-suffix">%</span></div>
+      <div class="similarity-plain">${geneLabel}: <strong>${pct}%</strong></div>
       <div class="progress-wrap" aria-label="${pct}% similarity">
         <div class="progress-fill" style="width:${barWidth}%"></div>
       </div>

@@ -248,12 +248,24 @@ main {
   font-size: 3.2rem;
   font-weight: 800;
   line-height: 1;
-  background: linear-gradient(135deg, var(--accent), var(--accent2));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: var(--text);
 }
 .similarity-suffix { font-size: 1.4rem; font-weight: 600; }
+
+/* Always-visible fallback text in case gradient text is not supported. */
+.similarity-plain {
+  margin-top: 0.35rem;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+@supports (-webkit-background-clip: text) {
+  .similarity-value {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+}
 
 /* progress bar */
 .progress-wrap {
