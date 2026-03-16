@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Primate DNA Similarities</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>Primate DNA Similarities</h1>
+    <p class="subtitle">Select two primates to compare their DNA</p>
+  </header>
+
+  <div class="layout">
+    <main class="primate-grid" id="primate-grid" aria-label="Primate list">
+      <!-- Cards are injected by script.js -->
+    </main>
+
+    <aside class="panel" id="panel" aria-live="polite">
+      <div class="panel-inner">
+        <h2>DNA Similarity</h2>
+        <p class="hint" id="hint">Click two primates to compare their DNA.</p>
+        <div class="result hidden" id="result">
+          <div class="organisms">
+            <span class="org-name" id="org-a"></span>
+            <span class="vs">vs</span>
+            <span class="org-name" id="org-b"></span>
+          </div>
+          <div class="similarity-bar-wrap">
+            <div class="similarity-bar" id="similarity-bar"></div>
+          </div>
+          <div class="similarity-value" id="similarity-value"></div>
+          <p class="similarity-note" id="similarity-note"></p>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
