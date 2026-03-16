@@ -3,39 +3,49 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Primate DNA Similarities</title>
+  <title>Primate DNA Similarity</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <header>
-    <h1>Primate DNA Similarities</h1>
-    <p class="subtitle">Select two primates to compare their DNA</p>
+    <div class="header-inner">
+      <h1>🧬 Primate DNA Similarity</h1>
+      <p class="subtitle">
+        Select a gene target, then compare that DNA region across primates
+      </p>
+    </div>
   </header>
 
-  <div class="layout">
-    <main class="primate-grid" id="primate-grid" aria-label="Primate list">
-      <!-- Cards are injected by script.js -->
-    </main>
+  <main>
+    <section class="grid-section">
+      <div class="controls-bar">
+        <label for="gene-select">Gene Target</label>
+        <select id="gene-select" aria-label="Choose a gene target">
+          <option value="cytb">Mitochondrial cytochrome b (~405 bp)</option>
+          <option value="cox1">Mitochondrial COX1 (~1.5 kb)</option>
+        </select>
+      </div>
+      <div id="status-bar" class="status-bar" aria-live="polite">
+        Click a primate to select it, then click another to compare.
+      </div>
+      <div id="primate-grid" class="primate-grid" role="list"></div>
+    </section>
 
-    <aside class="panel" id="panel" aria-live="polite">
-      <div class="panel-inner">
-        <h2>DNA Similarity</h2>
-        <p class="hint" id="hint">Click two primates to compare their DNA.</p>
-        <div class="result hidden" id="result">
-          <div class="organisms">
-            <span class="org-name" id="org-a"></span>
-            <span class="vs">vs</span>
-            <span class="org-name" id="org-b"></span>
-          </div>
-          <div class="similarity-bar-wrap">
-            <div class="similarity-bar" id="similarity-bar"></div>
-          </div>
-          <div class="similarity-value" id="similarity-value"></div>
-          <p class="similarity-note" id="similarity-note"></p>
+    <aside id="result-panel" class="result-panel" aria-label="Comparison results">
+      <div class="result-inner">
+        <h2>Comparison</h2>
+        <div id="result-content" class="result-placeholder">
+          <span class="dna-icon">🔬</span>
+          <p>Select two primates<br />to see their DNA similarity</p>
         </div>
       </div>
     </aside>
-  </div>
+  </main>
+
+  <footer>
+    <p id="sequence-note">Sequences: partial mitochondrial cytochrome&nbsp;b gene (~405&nbsp;bp) &bull;
+       Similarity computed via percent identity after global alignment</p>
+  </footer>
 
   <script src="script.js"></script>
 </body>
