@@ -2,7 +2,7 @@
 
 An interactive GitHub Pages website that compares mitochondrial DNA sequences across primates and displays percent identity between any two selected species.
 
-**Live demo:** https://nickbonavita.github.io/primate_similarities
+**Live demo:** https://nickbonavita.github.io/primate_similarities/
 
 ---
 
