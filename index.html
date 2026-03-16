@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Primate DNA Similarity</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <div class="header-inner">
+      <h1>🧬 Primate DNA Similarity</h1>
+      <p class="subtitle">
+        Select two primates to compare their mitochondrial cytochrome&nbsp;b DNA sequences
+      </p>
+    </div>
+  </header>
+
+  <main>
+    <section class="grid-section">
+      <div id="status-bar" class="status-bar" aria-live="polite">
+        Click a primate to select it, then click another to compare.
+      </div>
+      <div id="primate-grid" class="primate-grid" role="list"></div>
+    </section>
+
+    <aside id="result-panel" class="result-panel" aria-label="Comparison results">
+      <div class="result-inner">
+        <h2>Comparison</h2>
+        <div id="result-content" class="result-placeholder">
+          <span class="dna-icon">🔬</span>
+          <p>Select two primates<br />to see their DNA similarity</p>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <footer>
+    <p>Sequences: partial mitochondrial cytochrome&nbsp;b gene (~405&nbsp;bp) &bull;
+       Similarity computed via percent identity after global alignment</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
