@@ -105,7 +105,18 @@ main {
   outline-offset: 2px;
 }
 
-.card-emoji { font-size: 2rem; line-height: 1; }
+.card-photo {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: #111;
+}
+.card-emoji-fallback {
+  font-size: 2rem;
+  line-height: 1;
+}
 .card-common {
   font-weight: 600;
   font-size: 0.95rem;

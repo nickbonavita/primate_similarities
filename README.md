@@ -41,4 +41,5 @@ index.html    – page structure
 style.css     – dark-theme UI, card highlight, result panel
 script.js     – FASTA loader, Needleman-Wunsch aligner, selection logic
 fasta/        – one .fasta file per species
+assets/       – local primate card photos used by the UI
 ```

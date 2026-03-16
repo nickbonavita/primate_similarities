@@ -30,7 +30,7 @@ jobs:
       - name: Prepare site artifact
         run: |
           mkdir -p public
-          cp -r index.html script.js style.css fasta public/
+          cp -r index.html script.js style.css fasta assets public/
           touch public/.nojekyll
 
       - name: Upload artifact

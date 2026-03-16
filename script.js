@@ -6,17 +6,17 @@
 
 /* ── Primate catalogue ─────────────────────────────────────────────── */
 const PRIMATES = [
-  { id: "homo_sapiens",       common: "Human",               species: "Homo sapiens",        emoji: "🧑" },
-  { id: "pan_troglodytes",    common: "Chimpanzee",           species: "Pan troglodytes",     emoji: "🐒" },
-  { id: "pan_paniscus",       common: "Bonobo",               species: "Pan paniscus",        emoji: "🐒" },
-  { id: "gorilla_gorilla",    common: "Western Gorilla",      species: "Gorilla gorilla",     emoji: "🦍" },
-  { id: "pongo_pygmaeus",     common: "Bornean Orangutan",    species: "Pongo pygmaeus",      emoji: "🦧" },
-  { id: "hylobates_lar",      common: "White-handed Gibbon",  species: "Hylobates lar",       emoji: "🐒" },
-  { id: "macaca_mulatta",     common: "Rhesus Macaque",       species: "Macaca mulatta",      emoji: "🐵" },
-  { id: "papio_anubis",       common: "Olive Baboon",         species: "Papio anubis",        emoji: "🐵" },
-  { id: "callithrix_jacchus", common: "Common Marmoset",      species: "Callithrix jacchus",  emoji: "🐵" },
-  { id: "lemur_catta",        common: "Ring-tailed Lemur",    species: "Lemur catta",         emoji: "🐾" },
-  { id: "tarsius_syrichta",   common: "Philippine Tarsier",   species: "Tarsius syrichta",    emoji: "👁️"  },
+  { id: "homo_sapiens",       common: "Human",               species: "Homo sapiens",        emoji: "🧑", photo: "assets/primates/homo_sapiens.jpg" },
+  { id: "pan_troglodytes",    common: "Chimpanzee",           species: "Pan troglodytes",     emoji: "🐒", photo: "assets/primates/pan_troglodytes.jpg" },
+  { id: "pan_paniscus",       common: "Bonobo",               species: "Pan paniscus",        emoji: "🐒", photo: "assets/primates/pan_paniscus.jpg" },
+  { id: "gorilla_gorilla",    common: "Western Gorilla",      species: "Gorilla gorilla",     emoji: "🦍", photo: "assets/primates/gorilla_gorilla.jpg" },
+  { id: "pongo_pygmaeus",     common: "Bornean Orangutan",    species: "Pongo pygmaeus",      emoji: "🦧", photo: "assets/primates/pongo_pygmaeus.jpg" },
+  { id: "hylobates_lar",      common: "White-handed Gibbon",  species: "Hylobates lar",       emoji: "🐒", photo: "assets/primates/hylobates_lar.jpg" },
+  { id: "macaca_mulatta",     common: "Rhesus Macaque",       species: "Macaca mulatta",      emoji: "🐵", photo: "assets/primates/macaca_mulatta.jpg" },
+  { id: "papio_anubis",       common: "Olive Baboon",         species: "Papio anubis",        emoji: "🐵", photo: "assets/primates/papio_anubis.jpg" },
+  { id: "callithrix_jacchus", common: "Common Marmoset",      species: "Callithrix jacchus",  emoji: "🐵", photo: "assets/primates/callithrix_jacchus.jpg" },
+  { id: "lemur_catta",        common: "Ring-tailed Lemur",    species: "Lemur catta",         emoji: "🐾", photo: "assets/primates/lemur_catta.jpg" },
+  { id: "tarsius_syrichta",   common: "Philippine Tarsier",   species: "Tarsius syrichta",    emoji: "👁️", photo: "assets/primates/tarsius_syrichta.jpg" },
 ];
 
 /* ── State ──────────────────────────────────────────────────────────── */
@@ -38,11 +38,19 @@ function renderGrid() {
     card.setAttribute("aria-label", `${p.common} (${p.species})`);
     card.dataset.id = p.id;
     card.innerHTML = `
-      <span class="card-emoji">${p.emoji}</span>
+      <img class="card-photo" src="${p.photo}" alt="${p.common}" loading="lazy" />
       <span class="card-common">${p.common}</span>
       <span class="card-species">${p.species}</span>
       <span class="card-check" aria-hidden="true">✓</span>
     `;
+    const img = card.querySelector(".card-photo");
+    img.addEventListener("error", () => {
+      img.remove();
+      const fallback = document.createElement("span");
+      fallback.className = "card-emoji-fallback";
+      fallback.textContent = p.emoji;
+      card.prepend(fallback);
+    });
     card.addEventListener("click", () => toggleSelection(p.id));
     card.addEventListener("keydown", e => {
       if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggleSelection(p.id); }
