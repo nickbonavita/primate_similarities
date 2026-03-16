@@ -2,19 +2,19 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --bg:        #0f1117;
-  --surface:   #1a1d27;
-  --card:      #22263a;
-  --border:    #2e3350;
-  --accent:    #38ef7d;      /* selection green */
-  --accent-bg: rgba(56,239,125,0.12);
-  --accent2:   #11998e;
-  --text:      #e8eaf6;
-  --muted:     #8892b0;
-  --danger:    #ff6b6b;
+  --bg:        #f6f9ff;
+  --surface:   #ffffff;
+  --card:      #f0f5ff;
+  --border:    #c7d7f6;
+  --accent:    #1d4ed8;
+  --accent-bg: rgba(29, 78, 216, 0.12);
+  --accent2:   #3b82f6;
+  --text:      #0f2347;
+  --muted:     #4f6ea7;
+  --danger:    #c62828;
   --radius:    12px;
   --transition: 0.18s ease;
-  --shadow:    0 4px 24px rgba(0,0,0,0.4);
+  --shadow:    0 8px 24px rgba(29, 78, 216, 0.12);
 }
 
 html { font-size: 16px; }
@@ -29,7 +29,7 @@ body {
 
 /* ─── Header ──────────────────────────────────────────────────────── */
 header {
-  background: linear-gradient(135deg, #1a1d27 0%, #12151f 100%);
+  background: linear-gradient(135deg, #e9f1ff 0%, #dbeafe 100%);
   border-bottom: 1px solid var(--border);
   padding: 1.5rem 2rem;
 }
@@ -141,7 +141,7 @@ main {
   object-fit: cover;
   border-radius: 10px;
   border: 1px solid var(--border);
-  background: #111;
+  background: #e5efff;
 }
 .card-emoji-fallback {
   font-size: 2rem;
