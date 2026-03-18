@@ -45,10 +45,16 @@ Cytochrome b approximate similarity to Human:
 | Western Gorilla | *Gorilla gorilla* | 97.8% |
 | Bornean Orangutan | *Pongo pygmaeus* | 96.5% |
 | White-handed Gibbon | *Hylobates lar* | 96.0% |
+| N. White-cheeked Gibbon | *Nomascus leucogenys* | ~95.8% |
 | Rhesus Macaque | *Macaca mulatta* | 93.1% |
 | Olive Baboon | *Papio anubis* | 92.6% |
+| Mandrill | *Mandrillus sphinx* | ~92.4% |
+| Green Monkey | *Chlorocebus sabaeus* | ~92.0% |
 | Common Marmoset | *Callithrix jacchus* | 88.9% |
+| Squirrel Monkey | *Saimiri boliviensis* | ~88.5% |
+| Owl Monkey | *Aotus nancymaae* | ~88.0% |
 | Ring-tailed Lemur | *Lemur catta* | 83.0% |
+| Aye-aye | *Daubentonia madagascariensis* | ~82.0% |
 | Philippine Tarsier | *Tarsius syrichta* | 79.0% |
 
 FASTA files live in `fasta/` and can be replaced with any `.fasta` sequences.

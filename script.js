@@ -16,8 +16,14 @@ const PRIMATES = [
   { id: "hylobates_lar",      common: "White-handed Gibbon",  species: "Hylobates lar",       emoji: "🐒", photo: "assets/primates/hylobates_lar.jpg" },
   { id: "macaca_mulatta",     common: "Rhesus Macaque",       species: "Macaca mulatta",      emoji: "🐵", photo: "assets/primates/macaca_mulatta.jpg" },
   { id: "papio_anubis",       common: "Olive Baboon",         species: "Papio anubis",        emoji: "🐵", photo: "assets/primates/papio_anubis.jpg" },
+  { id: "mandrillus_sphinx",  common: "Mandrill",             species: "Mandrillus sphinx",   emoji: "🐵", photo: "assets/primates/mandrillus_sphinx.jpg" },
+  { id: "chlorocebus_sabaeus", common: "Green Monkey",        species: "Chlorocebus sabaeus", emoji: "🐒", photo: "assets/primates/chlorocebus_sabaeus.jpg" },
   { id: "callithrix_jacchus", common: "Common Marmoset",      species: "Callithrix jacchus",  emoji: "🐵", photo: "assets/primates/callithrix_jacchus.jpg" },
+  { id: "saimiri_boliviensis", common: "Squirrel Monkey",     species: "Saimiri boliviensis", emoji: "🐒", photo: "assets/primates/saimiri_boliviensis.jpg" },
+  { id: "aotus_nancymaae",   common: "Owl Monkey",            species: "Aotus nancymaae",    emoji: "🐒", photo: "assets/primates/aotus_nancymaae.jpg" },
+  { id: "nomascus_leucogenys", common: "N. White-cheeked Gibbon", species: "Nomascus leucogenys", emoji: "🐒", photo: "assets/primates/nomascus_leucogenys.jpg" },
   { id: "lemur_catta",        common: "Ring-tailed Lemur",    species: "Lemur catta",         emoji: "🐾", photo: "assets/primates/lemur_catta.jpg" },
+  { id: "daubentonia_madagascariensis", common: "Aye-aye",    species: "Daubentonia madagascariensis", emoji: "🐾", photo: "assets/primates/daubentonia_madagascariensis.jpg" },
   { id: "tarsius_syrichta",   common: "Philippine Tarsier",   species: "Tarsius syrichta",    emoji: "👁️", photo: "assets/primates/tarsius_syrichta.jpg" },
 ];
 
@@ -30,10 +36,16 @@ const TAXONOMY = {
   gorilla_gorilla:        { order: "Primates", suborder: "Haplorhini", infraorder: "Simiiformes", parvorder: "Catarrhini", superfamily: "Hominoidea", family: "Hominidae", subfamily: "Homininae", tribe: "Gorillini", genus: "Gorilla" },
   pongo_pygmaeus:         { order: "Primates", suborder: "Haplorhini", infraorder: "Simiiformes", parvorder: "Catarrhini", superfamily: "Hominoidea", family: "Hominidae", subfamily: "Ponginae",   tribe: null,        genus: "Pongo" },
   hylobates_lar:          { order: "Primates", suborder: "Haplorhini", infraorder: "Simiiformes", parvorder: "Catarrhini", superfamily: "Hominoidea", family: "Hylobatidae", subfamily: null,        tribe: null,        genus: "Hylobates" },
-  macaca_mulatta:         { order: "Primates", suborder: "Haplorhini", infraorder: "Simiiformes", parvorder: "Catarrhini", superfamily: null,          family: "Cercopithecidae", subfamily: "Cercopithecinae", tribe: null, genus: "Macaca" },
-  papio_anubis:           { order: "Primates", suborder: "Haplorhini", infraorder: "Simiiformes", parvorder: "Catarrhini", superfamily: null,          family: "Cercopithecidae", subfamily: "Cercopithecinae", tribe: null, genus: "Papio" },
+  macaca_mulatta:         { order: "Primates", suborder: "Haplorhini", infraorder: "Simiiformes", parvorder: "Catarrhini", superfamily: null,          family: "Cercopithecidae", subfamily: "Cercopithecinae", tribe: "Papionini",       genus: "Macaca" },
+  papio_anubis:           { order: "Primates", suborder: "Haplorhini", infraorder: "Simiiformes", parvorder: "Catarrhini", superfamily: null,          family: "Cercopithecidae", subfamily: "Cercopithecinae", tribe: "Papionini",       genus: "Papio" },
+  mandrillus_sphinx:      { order: "Primates", suborder: "Haplorhini", infraorder: "Simiiformes", parvorder: "Catarrhini", superfamily: null,          family: "Cercopithecidae", subfamily: "Cercopithecinae", tribe: "Papionini",       genus: "Mandrillus" },
+  chlorocebus_sabaeus:    { order: "Primates", suborder: "Haplorhini", infraorder: "Simiiformes", parvorder: "Catarrhini", superfamily: null,          family: "Cercopithecidae", subfamily: "Cercopithecinae", tribe: "Cercopithecini",  genus: "Chlorocebus" },
   callithrix_jacchus:     { order: "Primates", suborder: "Haplorhini", infraorder: "Simiiformes", parvorder: "Platyrrhini", superfamily: null,         family: "Callitrichidae",  subfamily: null,        tribe: null,        genus: "Callithrix" },
+  saimiri_boliviensis:    { order: "Primates", suborder: "Haplorhini", infraorder: "Simiiformes", parvorder: "Platyrrhini", superfamily: null,         family: "Cebidae",         subfamily: "Saimiriinae",  tribe: null,        genus: "Saimiri" },
+  aotus_nancymaae:        { order: "Primates", suborder: "Haplorhini", infraorder: "Simiiformes", parvorder: "Platyrrhini", superfamily: null,         family: "Aotidae",         subfamily: null,        tribe: null,        genus: "Aotus" },
+  nomascus_leucogenys:    { order: "Primates", suborder: "Haplorhini", infraorder: "Simiiformes", parvorder: "Catarrhini", superfamily: "Hominoidea", family: "Hylobatidae",  subfamily: null,        tribe: null,        genus: "Nomascus" },
   lemur_catta:            { order: "Primates", suborder: "Strepsirrhini", infraorder: null,        parvorder: null,         superfamily: null,          family: "Lemuridae",       subfamily: null,        tribe: null,        genus: "Lemur" },
+  daubentonia_madagascariensis: { order: "Primates", suborder: "Strepsirrhini", infraorder: null, parvorder: null,         superfamily: null,          family: "Daubentoniidae",  subfamily: null,        tribe: null,        genus: "Daubentonia" },
   tarsius_syrichta:       { order: "Primates", suborder: "Haplorhini",    infraorder: "Tarsiiformes", parvorder: null,      superfamily: null,          family: "Tarsiidae",       subfamily: null,        tribe: null,        genus: "Tarsius" },
 };
 
