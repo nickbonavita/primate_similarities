@@ -22,19 +22,19 @@ const PRIMATES = [
 ];
 
 const TAXONOMY = {
-  homo_sapiens:            { infraorder: "haplorrhini", simian: true,  catarrhini: true,  hominoidea: true,  hominidae: true,  genus: "homo" },
-  homo_neanderthalensis:  { infraorder: "haplorrhini", simian: true,  catarrhini: true,  hominoidea: true,  hominidae: true,  genus: "homo" },
-  homo_denisova:           { infraorder: "haplorrhini", simian: true,  catarrhini: true,  hominoidea: true,  hominidae: true,  genus: "homo" },
-  pan_troglodytes:        { infraorder: "haplorrhini", simian: true,  catarrhini: true,  hominoidea: true,  hominidae: true,  genus: "pan" },
-  pan_paniscus:       { infraorder: "haplorrhini", simian: true,  catarrhini: true,  hominoidea: true,  hominidae: true,  genus: "pan" },
-  gorilla_gorilla:    { infraorder: "haplorrhini", simian: true,  catarrhini: true,  hominoidea: true,  hominidae: true,  genus: "gorilla" },
-  pongo_pygmaeus:     { infraorder: "haplorrhini", simian: true,  catarrhini: true,  hominoidea: true,  hominidae: true,  genus: "pongo" },
-  hylobates_lar:      { infraorder: "haplorrhini", simian: true,  catarrhini: true,  hominoidea: true,  hominidae: false, genus: "hylobates" },
-  macaca_mulatta:     { infraorder: "haplorrhini", simian: true,  catarrhini: true,  hominoidea: false, hominidae: false, genus: "macaca" },
-  papio_anubis:       { infraorder: "haplorrhini", simian: true,  catarrhini: true,  hominoidea: false, hominidae: false, genus: "papio" },
-  callithrix_jacchus: { infraorder: "haplorrhini", simian: true,  catarrhini: false, hominoidea: false, hominidae: false, genus: "callithrix" },
-  lemur_catta:        { infraorder: "strepsirrhini", simian: false, catarrhini: false, hominoidea: false, hominidae: false, genus: "lemur" },
-  tarsius_syrichta:   { infraorder: "haplorrhini", simian: false, catarrhini: false, hominoidea: false, hominidae: false, genus: "tarsius" },
+  homo_sapiens:           { order: "Primates", suborder: "Haplorhini", infraorder: "Simiiformes", parvorder: "Catarrhini", superfamily: "Hominoidea", family: "Hominidae", subfamily: "Homininae", tribe: "Hominini", genus: "Homo" },
+  homo_neanderthalensis:  { order: "Primates", suborder: "Haplorhini", infraorder: "Simiiformes", parvorder: "Catarrhini", superfamily: "Hominoidea", family: "Hominidae", subfamily: "Homininae", tribe: "Hominini", genus: "Homo" },
+  homo_denisova:          { order: "Primates", suborder: "Haplorhini", infraorder: "Simiiformes", parvorder: "Catarrhini", superfamily: "Hominoidea", family: "Hominidae", subfamily: "Homininae", tribe: "Hominini", genus: "Homo" },
+  pan_troglodytes:        { order: "Primates", suborder: "Haplorhini", infraorder: "Simiiformes", parvorder: "Catarrhini", superfamily: "Hominoidea", family: "Hominidae", subfamily: "Homininae", tribe: "Hominini", genus: "Pan" },
+  pan_paniscus:           { order: "Primates", suborder: "Haplorhini", infraorder: "Simiiformes", parvorder: "Catarrhini", superfamily: "Hominoidea", family: "Hominidae", subfamily: "Homininae", tribe: "Hominini", genus: "Pan" },
+  gorilla_gorilla:        { order: "Primates", suborder: "Haplorhini", infraorder: "Simiiformes", parvorder: "Catarrhini", superfamily: "Hominoidea", family: "Hominidae", subfamily: "Homininae", tribe: "Gorillini", genus: "Gorilla" },
+  pongo_pygmaeus:         { order: "Primates", suborder: "Haplorhini", infraorder: "Simiiformes", parvorder: "Catarrhini", superfamily: "Hominoidea", family: "Hominidae", subfamily: "Ponginae",   tribe: null,        genus: "Pongo" },
+  hylobates_lar:          { order: "Primates", suborder: "Haplorhini", infraorder: "Simiiformes", parvorder: "Catarrhini", superfamily: "Hominoidea", family: "Hylobatidae", subfamily: null,        tribe: null,        genus: "Hylobates" },
+  macaca_mulatta:         { order: "Primates", suborder: "Haplorhini", infraorder: "Simiiformes", parvorder: "Catarrhini", superfamily: null,          family: "Cercopithecidae", subfamily: "Cercopithecinae", tribe: null, genus: "Macaca" },
+  papio_anubis:           { order: "Primates", suborder: "Haplorhini", infraorder: "Simiiformes", parvorder: "Catarrhini", superfamily: null,          family: "Cercopithecidae", subfamily: "Cercopithecinae", tribe: null, genus: "Papio" },
+  callithrix_jacchus:     { order: "Primates", suborder: "Haplorhini", infraorder: "Simiiformes", parvorder: "Platyrrhini", superfamily: null,         family: "Callitrichidae",  subfamily: null,        tribe: null,        genus: "Callithrix" },
+  lemur_catta:            { order: "Primates", suborder: "Strepsirrhini", infraorder: null,        parvorder: null,         superfamily: null,          family: "Lemuridae",       subfamily: null,        tribe: null,        genus: "Lemur" },
+  tarsius_syrichta:       { order: "Primates", suborder: "Haplorhini",    infraorder: "Tarsiiformes", parvorder: null,      superfamily: null,          family: "Tarsiidae",       subfamily: null,        tribe: null,        genus: "Tarsius" },
 };
 
 const GENES = {
@@ -382,22 +382,39 @@ function percentIdentity(seqA, seqB) {
 }
 
 /* ── Relationship label ─────────────────────────────────────────────── */
+/**
+ * Return the most specific shared taxonomic rank between two species.
+ * Walks from genus up through tribe, subfamily, family, superfamily,
+ * parvorder, infraorder, suborder, to order.
+ */
 function relationshipLabel(idA, idB, pct) {
   if (idA === idB || pct >= 99.9) return "Virtually Identical";
 
   const a = TAXONOMY[idA];
   const b = TAXONOMY[idB];
-  if (!a || !b) return "Distant Relatives";
+  if (!a || !b) return "Order: Primates";
 
-  if (a.genus === b.genus) return "Closest Relatives";
-  if (a.hominidae && b.hominidae) return "Great Ape Relatives";
-  if (a.hominoidea && b.hominoidea) return "Ape Relatives";
-  if (a.catarrhini && b.catarrhini) return "Old World Monkeys";
-  if (!a.catarrhini && !b.catarrhini && a.simian && b.simian) return "New World Monkeys";
-  if (a.simian && b.simian) return "Monkey Relatives";
-  if (a.infraorder === "strepsirrhini" && b.infraorder === "strepsirrhini") return "Strepsirrhine Primates";
-  if (a.infraorder === "haplorrhini" && b.infraorder === "haplorrhini") return "Haplorhine Relatives";
-  return "Distant Relatives";
+  /* Ordered from most specific to least specific */
+  const ranks = [
+    { key: "genus",       label: "Genus" },
+    { key: "tribe",       label: "Tribe" },
+    { key: "subfamily",   label: "Subfamily" },
+    { key: "family",      label: "Family" },
+    { key: "superfamily",  label: "Superfamily" },
+    { key: "parvorder",   label: "Parvorder" },
+    { key: "infraorder",  label: "Infraorder" },
+    { key: "suborder",    label: "Suborder" },
+  ];
+
+  for (const { key, label } of ranks) {
+    const va = a[key];
+    const vb = b[key];
+    if (va && vb && va === vb) {
+      return `${label}: ${va}`;
+    }
+  }
+
+  return "Order: Primates";
 }
 
 /* ── Main comparison flow ───────────────────────────────────────────── */
