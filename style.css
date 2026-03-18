@@ -86,6 +86,13 @@ header h1 {
   -webkit-text-fill-color: initial;
   font-size: 1.6rem;
 }
+.byline {
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin-top: 0.25rem;
+  letter-spacing: 0.01em;
+}
 .subtitle {
   color: var(--muted);
   margin-top: 0.45rem;
