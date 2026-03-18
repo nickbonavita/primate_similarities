@@ -552,11 +552,12 @@ footer {
 /* ─── Responsive ──────────────────────────────────────────────────── */
 @media (max-width: 720px) {
   main { flex-direction: column; padding: 1rem; }
-  .grid-section { order: 2; }
-  .result-panel { width: 100%; position: static; order: 1; }
-  .primate-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); }
-  .controls-bar { flex-direction: column; align-items: flex-start; }
+  .grid-section { display: contents; }
+  .controls-bar { order: 1; flex-direction: column; align-items: flex-start; width: 100%; }
   .controls-bar select { width: 100%; }
+  #status-bar { order: 2; }
+  .result-panel { width: 100%; position: static; order: 3; }
+  .primate-grid { order: 4; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); }
   header { padding: 1.5rem 1rem 1.2rem; }
   header h1 { font-size: 1.5rem; }
   .bg-glow { display: none; }
