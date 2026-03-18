@@ -85,6 +85,41 @@ const GENES = {
     note: "Sequences: nuclear IRBP/RBP3 coding sequence (typically ~3.7 kb; some species may be unavailable)",
     description: "IRBP (interphotoreceptor retinoid-binding protein, also called RBP3) is a nuclear gene expressed in the retina that transports retinoids between photoreceptor cells and the retinal pigment epithelium. It is widely used in mammalian phylogenetics because its large size and steady evolutionary rate provide strong signal for resolving both deep and recent divergences.",
   },
+  nd1: {
+    key: "nd1",
+    label: "Mitochondrial ND1",
+    folder: "fasta/nd1",
+    note: "Sequences: mitochondrial ND1 coding sequence (~956 bp)",
+    description: "ND1 (NADH dehydrogenase subunit 1) is the first protein-coding gene encountered on the heavy strand of the mitochondrial genome. It encodes a core subunit of Complex I, the largest enzyme in the respiratory chain. ND1 evolves at a moderate rate and is commonly used in primate phylogenetics alongside other mitochondrial markers.",
+  },
+  cox3: {
+    key: "cox3",
+    label: "Mitochondrial COX3",
+    folder: "fasta/cox3",
+    note: "Sequences: mitochondrial COX3 coding sequence (~784 bp)",
+    description: "COX3 (cytochrome c oxidase subunit III) encodes the third subunit of Complex IV, the terminal enzyme of the mitochondrial electron transport chain. Together with COX1 and COX2, it forms the catalytic core that transfers electrons to oxygen. COX3 provides useful phylogenetic signal at both genus and family levels in primates.",
+  },
+  nd4: {
+    key: "nd4",
+    label: "Mitochondrial ND4",
+    folder: "fasta/nd4",
+    note: "Sequences: mitochondrial ND4 coding sequence (~1.4 kb)",
+    description: "ND4 (NADH dehydrogenase subunit 4) is one of the larger mitochondrial protein-coding genes, encoding a membrane-arm subunit of Complex I. It is frequently used in studies of primate evolution and population genetics. Mutations in ND4 have been associated with Leber hereditary optic neuropathy in humans.",
+  },
+  nd5: {
+    key: "nd5",
+    label: "Mitochondrial ND5",
+    folder: "fasta/nd5",
+    note: "Sequences: mitochondrial ND5 coding sequence (~1.8 kb)",
+    description: "ND5 (NADH dehydrogenase subunit 5) is the largest protein-coding gene in the mitochondrial genome. It encodes a key subunit at the tip of the membrane arm of Complex I that acts as a proton pump. Its large size provides abundant phylogenetic information, making it one of the most powerful single mitochondrial markers for resolving primate relationships.",
+  },
+  nd6: {
+    key: "nd6",
+    label: "Mitochondrial ND6",
+    folder: "fasta/nd6",
+    note: "Sequences: mitochondrial ND6 coding sequence (~525 bp)",
+    description: "ND6 (NADH dehydrogenase subunit 6) is unique among mitochondrial protein-coding genes because it is the only one encoded on the light (L) strand. It encodes a subunit of Complex I involved in proton translocation. Its unusual strand placement gives it a distinct base-composition bias, which can provide complementary phylogenetic insights.",
+  },
 };
 
 /* ── State ──────────────────────────────────────────────────────────── */

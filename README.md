@@ -25,6 +25,11 @@ The app currently includes these gene targets:
 - Mitochondrial ATP6 coding sequence (`fasta/atp6/`, ~681 bp)
 - Nuclear RAG1 coding sequence (`fasta/rag1/`, typically ~3.1 kb)
 - Nuclear IRBP/RBP3 coding sequence (`fasta/irbp/`, typically ~3.7 kb)
+- Mitochondrial ND1 coding sequence (`fasta/nd1/`, ~956 bp)
+- Mitochondrial COX3 coding sequence (`fasta/cox3/`, ~784 bp)
+- Mitochondrial ND4 coding sequence (`fasta/nd4/`, ~1.4 kb)
+- Mitochondrial ND5 coding sequence (`fasta/nd5/`, ~1.8 kb)
+- Mitochondrial ND6 coding sequence (`fasta/nd6/`, ~525 bp)
 
 If a species sequence is unavailable for the currently selected gene, that species card is shown grayed out and cannot be selected.
 
@@ -61,6 +66,11 @@ fasta/nd2/    – ND2 gene .fasta files for all species
 fasta/atp6/   – ATP6 gene .fasta files for all species
 fasta/rag1/   – RAG1 nuclear gene .fasta files (currently partial coverage)
 fasta/irbp/   – IRBP/RBP3 nuclear gene .fasta files (currently partial coverage)
+fasta/nd1/    – ND1 gene .fasta files for all species
+fasta/cox3/   – COX3 gene .fasta files for all species
+fasta/nd4/    – ND4 gene .fasta files for all species
+fasta/nd5/    – ND5 gene .fasta files for all species
+fasta/nd6/    – ND6 gene .fasta files for all species
 assets/       – local primate card photos used by the UI
 tools/        – helper scripts for downloading gene FASTA sets
 ```
