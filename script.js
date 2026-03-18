@@ -46,10 +46,41 @@ const GENES = {
     folder: "fasta/cox1",
     note: "Sequences: mitochondrial COX1 coding sequence (~1.5 kb)",
   },
+  cox2: {
+    key: "cox2",
+    label: "Mitochondrial COX2",
+    folder: "fasta/cox2",
+    note: "Sequences: mitochondrial COX2 coding sequence (~684 bp)",
+  },
+  nd2: {
+    key: "nd2",
+    label: "Mitochondrial ND2",
+    folder: "fasta/nd2",
+    note: "Sequences: mitochondrial ND2 coding sequence (~1.0 kb)",
+  },
+  atp6: {
+    key: "atp6",
+    label: "Mitochondrial ATP6",
+    folder: "fasta/atp6",
+    note: "Sequences: mitochondrial ATP6 coding sequence (~681 bp)",
+  },
+  rag1: {
+    key: "rag1",
+    label: "Nuclear RAG1",
+    folder: "fasta/rag1",
+    note: "Sequences: nuclear RAG1 coding sequence (typically ~3.1 kb; some partial records)",
+  },
+  irbp: {
+    key: "irbp",
+    label: "Nuclear IRBP (RBP3)",
+    folder: "fasta/irbp",
+    note: "Sequences: nuclear IRBP/RBP3 coding sequence (typically ~3.7 kb; some species may be unavailable)",
+  },
 };
 
 /* ── State ──────────────────────────────────────────────────────────── */
 const sequenceCache = {};   // "gene:id" → DNA string
+const availabilityCache = {}; // gene → { id: boolean }
 const selected = [];        // 0, 1, or 2 primate ids
 let selectedGene = "cytb";
 
@@ -73,6 +104,7 @@ function renderGrid() {
       <img class="card-photo" src="${p.photo}" alt="${p.common}" loading="lazy" />
       <span class="card-common">${p.common}</span>
       <span class="card-species">${p.species}</span>
+      <span class="card-unavailable" aria-hidden="true">No sequence</span>
       <span class="card-check" aria-hidden="true">✓</span>
     `;
     const img = card.querySelector(".card-photo");
@@ -93,6 +125,8 @@ function renderGrid() {
 
 /* ── Selection logic ────────────────────────────────────────────────── */
 function toggleSelection(id) {
+  if (!isGeneAvailableForSpecies(selectedGene, id)) return;
+
   const idx = selected.indexOf(id);
   if (idx !== -1) {
     // deselect
@@ -107,8 +141,69 @@ function toggleSelection(id) {
   updateUI();
 }
 
+function isGeneAvailableForSpecies(geneKey, id) {
+  const availability = availabilityCache[geneKey];
+  if (!availability) return true;
+  return availability[id] !== false;
+}
+
+async function ensureGeneAvailability(geneKey) {
+  if (availabilityCache[geneKey]) return availabilityCache[geneKey];
+
+  const results = {};
+  await Promise.all(PRIMATES.map(async p => {
+    const url = `${GENES[geneKey].folder}/${p.id}.fasta`;
+    let ok = false;
+
+    try {
+      const headResp = await fetch(url, { method: "HEAD" });
+      if (headResp.ok) {
+        ok = true;
+      } else if (headResp.status === 405 || headResp.status === 501) {
+        const getResp = await fetch(url);
+        ok = getResp.ok;
+      }
+    } catch {
+      ok = false;
+    }
+
+    results[p.id] = ok;
+  }));
+
+  availabilityCache[geneKey] = results;
+  return results;
+}
+
+function applyGeneAvailabilityToCards() {
+  const availability = availabilityCache[selectedGene] || null;
+  let unavailableCount = 0;
+
+  document.querySelectorAll(".primate-card").forEach(card => {
+    const id = card.dataset.id;
+    const available = availability ? availability[id] !== false : true;
+
+    card.classList.toggle("unavailable", !available);
+    card.setAttribute("aria-disabled", String(!available));
+    card.setAttribute("tabindex", available ? "0" : "-1");
+
+    if (!available) unavailableCount++;
+  });
+
+  for (let i = selected.length - 1; i >= 0; i--) {
+    if (!isGeneAvailableForSpecies(selectedGene, selected[i])) {
+      selected.splice(i, 1);
+    }
+  }
+
+  return unavailableCount;
+}
+
 function updateUI() {
   const geneLabel = GENES[selectedGene].label;
+  const unavailableCount = applyGeneAvailabilityToCards();
+  const unavailableNote = unavailableCount > 0
+    ? ` ${unavailableCount} species are unavailable for this gene and shown in gray.`
+    : "";
 
   // Update card highlights
   document.querySelectorAll(".primate-card").forEach(card => {
@@ -117,12 +212,12 @@ function updateUI() {
 
   // Update status bar
   if (selected.length === 0) {
-    statusBar.textContent = `Gene: ${geneLabel}. Click a primate to select it, then click another to compare.`;
+    statusBar.textContent = `Gene: ${geneLabel}. Click a primate to select it, then click another to compare.${unavailableNote}`;
     statusBar.classList.remove("two-selected");
     showPlaceholder();
   } else if (selected.length === 1) {
     const p = PRIMATES.find(x => x.id === selected[0]);
-    statusBar.textContent = `${p.common} selected for ${geneLabel}. Now select a second primate to compare.`;
+    statusBar.textContent = `${p.common} selected for ${geneLabel}. Now select a second primate to compare.${unavailableNote}`;
     statusBar.classList.remove("two-selected");
     showPlaceholder();
   } else {
@@ -320,11 +415,20 @@ function updateGeneContext() {
 
 /* ── Init ────────────────────────────────────────────────────────────── */
 geneSelect.addEventListener("change", () => {
-  selectedGene = geneSelect.value;
+  const geneKey = geneSelect.value;
+  selectedGene = geneKey;
   updateGeneContext();
-  updateUI();
+  statusBar.textContent = `Checking available ${GENES[geneKey].label} sequences…`;
+  ensureGeneAvailability(geneKey).then(() => {
+    if (selectedGene === geneKey) updateUI();
+  });
 });
 
-renderGrid();
-updateGeneContext();
-updateUI();
+async function initApp() {
+  renderGrid();
+  updateGeneContext();
+  await ensureGeneAvailability(selectedGene);
+  updateUI();
+}
+
+initApp();
