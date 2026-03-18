@@ -134,6 +134,13 @@ const GENES = {
     note: "Sequences: mitochondrial ND6 coding sequence (~525 bp)",
     description: "ND6 (NADH dehydrogenase subunit 6) is unique among mitochondrial protein-coding genes because it is the only one encoded on the light (L) strand. It encodes a subunit of Complex I involved in proton translocation. Its unusual strand placement gives it a distinct base-composition bias, which can provide complementary phylogenetic insights.",
   },
+  hoxa2: {
+    key: "hoxa2",
+    label: "Nuclear HOXA2",
+    folder: "fasta/hoxa2",
+    note: "Sequences: nuclear HOXA2 coding sequence (~1.1 kb; some species may be unavailable)",
+    description: "HOXA2 (homeobox A2) is a member of the HOX gene family — master regulators of body patterning during embryonic development. Located in the HOXA cluster on chromosome 7, HOXA2 plays a critical role in hindbrain segmentation and craniofacial morphogenesis. HOX genes are among the most conserved in the animal kingdom, and comparing HOXA2 across primates reveals the deep evolutionary constraints on developmental programs that shape anatomy.",
+  },
 };
 
 /* ── State ──────────────────────────────────────────────────────────── */

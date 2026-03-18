@@ -552,7 +552,7 @@ footer {
 /* ─── Responsive ──────────────────────────────────────────────────── */
 @media (max-width: 720px) {
   main { flex-direction: column; padding: 1rem; }
-  .result-panel { width: 100%; position: static; }
+  .result-panel { width: 100%; position: static; order: -1; }
   .primate-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); }
   .controls-bar { flex-direction: column; align-items: flex-start; }
   .controls-bar select { width: 100%; }
