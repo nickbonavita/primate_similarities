@@ -40,7 +40,7 @@ const GENES = {
     key: "cytb",
     label: "Mitochondrial Cytochrome b",
     folder: "fasta",
-    note: "Sequences: partial mitochondrial cytochrome b gene (~405 bp)",
+    note: "Sequences: mitochondrial cytochrome b coding sequence (~1.1 kb)",
     description: "Cytochrome b is one of the most widely used genes in animal phylogenetics. Located in the mitochondrial genome, it encodes part of the electron transport chain (Complex III). Because it evolves at a moderate rate, it is ideal for comparing species that diverged millions of years ago, making it a workhorse of primate systematics.",
   },
   cox1: {

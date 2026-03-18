@@ -18,7 +18,7 @@ An interactive GitHub Pages website that compares mitochondrial DNA sequences ac
 
 The app currently includes these gene targets:
 
-- Partial mitochondrial cytochrome b (`fasta/`, ~405 bp)
+- Mitochondrial cytochrome b coding sequence (`fasta/`, ~1.1 kb)
 - Mitochondrial COX1 coding sequence (`fasta/cox1/`, ~1.5 kb)
 - Mitochondrial COX2 coding sequence (`fasta/cox2/`, ~684 bp)
 - Mitochondrial ND2 coding sequence (`fasta/nd2/`, ~1.0 kb)
