@@ -39,6 +39,7 @@ Cytochrome b approximate similarity to Human:
 |---|---|---|
 | Human | *Homo sapiens* | — |
 | Neanderthal | *Homo neanderthalensis* | ~99.5% |
+| Denisovan | *Homo sp. Altai* | ~99.3% |
 | Chimpanzee | *Pan troglodytes* | 98.5% |
 | Bonobo | *Pan paniscus* | 98.0% |
 | Western Gorilla | *Gorilla gorilla* | 97.8% |

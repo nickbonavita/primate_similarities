@@ -8,6 +8,7 @@
 const PRIMATES = [
   { id: "homo_sapiens",              common: "Human",               species: "Homo sapiens",              emoji: "🧑", photo: "assets/primates/homo_sapiens.jpg" },
   { id: "homo_neanderthalensis",     common: "Neanderthal",          species: "Homo neanderthalensis",     emoji: "🦴", photo: "assets/primates/homo_neanderthalensis.jpg" },
+  { id: "homo_denisova",             common: "Denisovan",            species: "Homo sp. Altai (Denisovan)", emoji: "🦴", photo: "assets/primates/homo_denisova.jpg" },
   { id: "pan_troglodytes",           common: "Chimpanzee",           species: "Pan troglodytes",           emoji: "🐒", photo: "assets/primates/pan_troglodytes.jpg" },
   { id: "pan_paniscus",       common: "Bonobo",               species: "Pan paniscus",        emoji: "🐒", photo: "assets/primates/pan_paniscus.jpg" },
   { id: "gorilla_gorilla",    common: "Western Gorilla",      species: "Gorilla gorilla",     emoji: "🦍", photo: "assets/primates/gorilla_gorilla.jpg" },
@@ -23,6 +24,7 @@ const PRIMATES = [
 const TAXONOMY = {
   homo_sapiens:            { infraorder: "haplorrhini", simian: true,  catarrhini: true,  hominoidea: true,  hominidae: true,  genus: "homo" },
   homo_neanderthalensis:  { infraorder: "haplorrhini", simian: true,  catarrhini: true,  hominoidea: true,  hominidae: true,  genus: "homo" },
+  homo_denisova:           { infraorder: "haplorrhini", simian: true,  catarrhini: true,  hominoidea: true,  hominidae: true,  genus: "homo" },
   pan_troglodytes:        { infraorder: "haplorrhini", simian: true,  catarrhini: true,  hominoidea: true,  hominidae: true,  genus: "pan" },
   pan_paniscus:       { infraorder: "haplorrhini", simian: true,  catarrhini: true,  hominoidea: true,  hominidae: true,  genus: "pan" },
   gorilla_gorilla:    { infraorder: "haplorrhini", simian: true,  catarrhini: true,  hominoidea: true,  hominidae: true,  genus: "gorilla" },
