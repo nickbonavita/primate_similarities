@@ -12,7 +12,7 @@ An interactive GitHub Pages website that compares mitochondrial DNA sequences ac
 2. **Select** any two primates from the grid — selected cards highlight green.
 3. The site **fetches** the corresponding `.fasta` file for each species from the selected gene folder.
 4. A **Needleman-Wunsch global alignment** is run in the browser to compute percent identity.
-5. The **similarity score**, match counts, and a phylogenetic relationship label are shown in the side panel.
+5. The **similarity score**, match counts, and a taxonomy-based phylogenetic relationship label are shown in the side panel.
 
 ## Sequences
 

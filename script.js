@@ -19,6 +19,20 @@ const PRIMATES = [
   { id: "tarsius_syrichta",   common: "Philippine Tarsier",   species: "Tarsius syrichta",    emoji: "👁️", photo: "assets/primates/tarsius_syrichta.jpg" },
 ];
 
+const TAXONOMY = {
+  homo_sapiens:       { infraorder: "haplorrhini", simian: true,  catarrhini: true,  hominoidea: true,  hominidae: true,  genus: "homo" },
+  pan_troglodytes:    { infraorder: "haplorrhini", simian: true,  catarrhini: true,  hominoidea: true,  hominidae: true,  genus: "pan" },
+  pan_paniscus:       { infraorder: "haplorrhini", simian: true,  catarrhini: true,  hominoidea: true,  hominidae: true,  genus: "pan" },
+  gorilla_gorilla:    { infraorder: "haplorrhini", simian: true,  catarrhini: true,  hominoidea: true,  hominidae: true,  genus: "gorilla" },
+  pongo_pygmaeus:     { infraorder: "haplorrhini", simian: true,  catarrhini: true,  hominoidea: true,  hominidae: true,  genus: "pongo" },
+  hylobates_lar:      { infraorder: "haplorrhini", simian: true,  catarrhini: true,  hominoidea: true,  hominidae: false, genus: "hylobates" },
+  macaca_mulatta:     { infraorder: "haplorrhini", simian: true,  catarrhini: true,  hominoidea: false, hominidae: false, genus: "macaca" },
+  papio_anubis:       { infraorder: "haplorrhini", simian: true,  catarrhini: true,  hominoidea: false, hominidae: false, genus: "papio" },
+  callithrix_jacchus: { infraorder: "haplorrhini", simian: true,  catarrhini: false, hominoidea: false, hominidae: false, genus: "callithrix" },
+  lemur_catta:        { infraorder: "strepsirrhini", simian: false, catarrhini: false, hominoidea: false, hominidae: false, genus: "lemur" },
+  tarsius_syrichta:   { infraorder: "haplorrhini", simian: false, catarrhini: false, hominoidea: false, hominidae: false, genus: "tarsius" },
+};
+
 const GENES = {
   cytb: {
     key: "cytb",
@@ -225,13 +239,21 @@ function percentIdentity(seqA, seqB) {
 }
 
 /* ── Relationship label ─────────────────────────────────────────────── */
-function relationshipLabel(pct) {
-  if (pct >= 99)   return "Virtually Identical";
-  if (pct >= 97.5) return "Great Ape Relatives";
-  if (pct >= 95)   return "Ape Relatives";
-  if (pct >= 88)   return "Old World Monkeys";
-  if (pct >= 82)   return "New World Monkeys";
-  if (pct >= 78)   return "Strepsirrhine Primates";
+function relationshipLabel(idA, idB, pct) {
+  if (idA === idB || pct >= 99.9) return "Virtually Identical";
+
+  const a = TAXONOMY[idA];
+  const b = TAXONOMY[idB];
+  if (!a || !b) return "Distant Relatives";
+
+  if (a.genus === b.genus) return "Closest Relatives";
+  if (a.hominidae && b.hominidae) return "Great Ape Relatives";
+  if (a.hominoidea && b.hominoidea) return "Ape Relatives";
+  if (a.catarrhini && b.catarrhini) return "Old World Monkeys";
+  if (!a.catarrhini && !b.catarrhini && a.simian && b.simian) return "New World Monkeys";
+  if (a.simian && b.simian) return "Monkey Relatives";
+  if (a.infraorder === "strepsirrhini" && b.infraorder === "strepsirrhini") return "Strepsirrhine Primates";
+  if (a.infraorder === "haplorrhini" && b.infraorder === "haplorrhini") return "Haplorhine Relatives";
   return "Distant Relatives";
 }
 
@@ -252,7 +274,7 @@ async function computeAndShow(idA, idB) {
 /* ── Result rendering ───────────────────────────────────────────────── */
 function renderResult(pA, pB, identity, matches, aligned) {
   const pct = identity.toFixed(1);
-  const rel = relationshipLabel(identity);
+  const rel = relationshipLabel(pA.id, pB.id, identity);
   const barWidth = identity.toFixed(2);
   const geneLabel = GENES[selectedGene].label;
 
