@@ -9,10 +9,12 @@
   --card:        rgba(255, 255, 255, 0.85);
   --border:      rgba(0, 0, 0, 0.08);
   --border-hover:rgba(0, 120, 90, 0.2);
-  --accent:      #00956e;
-  --accent-dim:  rgba(0, 149, 110, 0.1);
-  --accent2:     #4a6cf7;
-  --accent2-dim: rgba(74, 108, 247, 0.08);
+  --accent:      #0fa87a;
+  --accent-mid:  #3b8ef7;
+  --accent-dim:  rgba(15, 168, 122, 0.1);
+  --accent2:     #5c6fff;
+  --accent2-dim: rgba(92, 111, 255, 0.08);
+  --gradient:    linear-gradient(135deg, #0fa87a 0%, #3b8ef7 50%, #5c6fff 100%);
   --text:        #1a2332;
   --text-bright: #0d1520;
   --muted:       #6b7a90;
@@ -20,8 +22,9 @@
   --radius:      14px;
   --radius-sm:   10px;
   --transition:  0.22s cubic-bezier(.4,0,.2,1);
-  --shadow:      0 4px 20px rgba(0, 0, 0, 0.07);
-  --shadow-glow: 0 0 40px rgba(0, 149, 110, 0.06);
+  --shadow:      0 4px 20px rgba(0, 0, 0, 0.06);
+  --shadow-lg:   0 8px 40px rgba(0, 0, 0, 0.08);
+  --shadow-glow: 0 0 40px rgba(15, 168, 122, 0.06);
 }
 
 html { font-size: 16px; scroll-behavior: smooth; }
@@ -46,15 +49,15 @@ body {
   opacity: 0.4;
 }
 .bg-glow--1 {
-  width: 600px; height: 600px;
-  top: -200px; left: -150px;
-  background: radial-gradient(circle, rgba(0, 149, 110, 0.08), transparent 70%);
+  width: 700px; height: 700px;
+  top: -250px; left: -200px;
+  background: radial-gradient(circle, rgba(15, 168, 122, 0.1), transparent 70%);
   animation: drift 18s ease-in-out infinite alternate;
 }
 .bg-glow--2 {
-  width: 500px; height: 500px;
-  bottom: -100px; right: -100px;
-  background: radial-gradient(circle, rgba(74, 108, 247, 0.06), transparent 70%);
+  width: 600px; height: 600px;
+  bottom: -150px; right: -150px;
+  background: radial-gradient(circle, rgba(92, 111, 255, 0.08), transparent 70%);
   animation: drift 22s ease-in-out infinite alternate-reverse;
 }
 @keyframes drift {
@@ -66,18 +69,26 @@ body {
 header {
   position: relative;
   z-index: 1;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.9) 0%, rgba(240, 242, 245, 0.85) 100%);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.95) 0%, rgba(245, 246, 248, 0.9) 100%);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--border);
   padding: 2rem 2rem 1.6rem;
 }
+header::after {
+  content: '';
+  position: absolute;
+  bottom: -1px; left: 0; right: 0;
+  height: 3px;
+  background: var(--gradient);
+  opacity: 0.6;
+}
 .header-inner { max-width: 1240px; margin: 0 auto; }
 header h1 {
-  font-size: 2rem;
+  font-size: 2.1rem;
   font-weight: 800;
   letter-spacing: -0.5px;
-  background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+  background: var(--gradient);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -155,7 +166,7 @@ main {
 .controls-bar select:focus-visible {
   outline: none;
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px var(--accent-dim);
+  box-shadow: 0 0 0 3px var(--accent-dim), 0 2px 8px rgba(15, 168, 122, 0.06);
 }
 
 .status-bar {
@@ -170,8 +181,8 @@ main {
 }
 .status-bar.two-selected {
   color: var(--accent);
-  border-color: rgba(0, 149, 110, 0.2);
-  background: rgba(0, 149, 110, 0.04);
+  border-color: rgba(15, 168, 122, 0.2);
+  background: rgba(15, 168, 122, 0.04);
 }
 
 .primate-grid {
@@ -208,7 +219,7 @@ main {
   position: absolute;
   inset: 0;
   border-radius: var(--radius);
-  background: radial-gradient(ellipse at 50% 0%, rgba(74, 108, 247, 0.04) 0%, transparent 70%);
+  background: radial-gradient(ellipse at 50% 0%, rgba(59, 142, 247, 0.05) 0%, transparent 70%);
   opacity: 0;
   transition: opacity var(--transition);
   pointer-events: none;
@@ -216,17 +227,17 @@ main {
 .primate-card:hover::before { opacity: 1; }
 .primate-card:hover {
   border-color: var(--border-hover);
-  transform: translateY(-3px);
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08), 0 0 20px rgba(0, 149, 110, 0.04);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(15, 168, 122, 0.06);
 }
 .primate-card.selected {
   border-color: var(--accent);
   background: var(--accent-dim);
-  box-shadow: 0 0 0 2px var(--accent-dim), 0 4px 20px rgba(0, 149, 110, 0.1);
+  box-shadow: 0 0 0 2px var(--accent-dim), 0 8px 28px rgba(15, 168, 122, 0.12);
 }
 .primate-card.selected::before {
   opacity: 1;
-  background: radial-gradient(ellipse at 50% 0%, rgba(0, 149, 110, 0.06) 0%, transparent 70%);
+  background: radial-gradient(ellipse at 50% 0%, rgba(15, 168, 122, 0.07) 0%, transparent 70%);
 }
 .primate-card.unavailable {
   opacity: 0.35;
@@ -297,9 +308,9 @@ main {
   position: absolute;
   top: 0.5rem;
   right: 0.5rem;
-  background: rgba(0, 149, 110, 0.12);
-  width: 22px;
-  height: 22px;
+  background: rgba(15, 168, 122, 0.14);
+  width: 24px;
+  height: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -336,7 +347,7 @@ main {
   position: absolute;
   top: 0; left: 0; right: 0;
   height: 3px;
-  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  background: var(--gradient);
   border-radius: var(--radius) var(--radius) 0 0;
 }
 .result-inner h2 {
@@ -362,8 +373,8 @@ main {
   position: absolute;
   top: 0; left: 0; right: 0;
   height: 2px;
-  background: linear-gradient(90deg, var(--accent2), var(--accent));
-  opacity: 0.5;
+  background: var(--gradient);
+  opacity: 0.45;
 }
 .gene-info h3 {
   font-size: 0.75rem;
@@ -412,11 +423,11 @@ main {
   font-size: 0.86rem;
 }
 .species-dot {
-  width: 8px; height: 8px;
+  width: 9px; height: 9px;
   border-radius: 50%;
-  background: var(--accent);
+  background: var(--gradient);
   flex-shrink: 0;
-  box-shadow: 0 0 6px rgba(0, 149, 110, 0.25);
+  box-shadow: 0 0 8px rgba(15, 168, 122, 0.2);
 }
 .species-name { font-weight: 600; color: var(--text-bright); }
 .species-sci  { color: var(--muted); font-style: italic; font-size: 0.8rem; }
@@ -437,14 +448,14 @@ main {
   margin-bottom: 0.5rem;
 }
 .similarity-value {
-  font-size: 3.4rem;
+  font-size: 3.6rem;
   font-weight: 900;
   line-height: 1;
-  background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+  background: var(--gradient);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  filter: drop-shadow(0 0 12px rgba(0, 149, 110, 0.1));
+  filter: drop-shadow(0 2px 8px rgba(15, 168, 122, 0.12));
 }
 .similarity-suffix {
   font-size: 1.5rem;
@@ -462,7 +473,7 @@ main {
 .progress-wrap {
   background: rgba(100, 130, 200, 0.1);
   border-radius: 999px;
-  height: 6px;
+  height: 7px;
   overflow: hidden;
   margin-top: 0.7rem;
   position: relative;
@@ -470,9 +481,9 @@ main {
 .progress-fill {
   height: 100%;
   border-radius: 999px;
-  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  background: var(--gradient);
   transition: width 0.7s cubic-bezier(.4,0,.2,1);
-  box-shadow: 0 0 8px rgba(0, 149, 110, 0.15);
+  box-shadow: 0 0 10px rgba(15, 168, 122, 0.18);
   position: relative;
 }
 
@@ -480,7 +491,7 @@ main {
 .relationship {
   display: inline-block;
   background: linear-gradient(135deg, var(--accent-dim) 0%, var(--accent2-dim) 100%);
-  border: 1px solid rgba(0, 149, 110, 0.15);
+  border: 1px solid rgba(15, 168, 122, 0.15);
   color: var(--accent);
   border-radius: 999px;
   font-size: 0.76rem;
