@@ -39,42 +39,49 @@ const GENES = {
     label: "Mitochondrial Cytochrome b",
     folder: "fasta",
     note: "Sequences: partial mitochondrial cytochrome b gene (~405 bp)",
+    description: "Cytochrome b is one of the most widely used genes in animal phylogenetics. Located in the mitochondrial genome, it encodes part of the electron transport chain (Complex III). Because it evolves at a moderate rate, it is ideal for comparing species that diverged millions of years ago, making it a workhorse of primate systematics.",
   },
   cox1: {
     key: "cox1",
     label: "Mitochondrial COX1",
     folder: "fasta/cox1",
     note: "Sequences: mitochondrial COX1 coding sequence (~1.5 kb)",
+    description: "COX1 (cytochrome c oxidase subunit I) is the standard gene used in DNA barcoding across the animal kingdom. It encodes a key subunit of Complex IV in the mitochondrial electron transport chain. Its high conservation makes it excellent for species identification, while enough variation remains to distinguish closely related species.",
   },
   cox2: {
     key: "cox2",
     label: "Mitochondrial COX2",
     folder: "fasta/cox2",
     note: "Sequences: mitochondrial COX2 coding sequence (~684 bp)",
+    description: "COX2 (cytochrome c oxidase subunit II) encodes another essential subunit of Complex IV, the final enzyme in the mitochondrial respiratory chain. It is frequently used alongside COX1 in phylogenetic analyses and evolves at a slightly faster rate, providing additional resolution for distinguishing primate lineages.",
   },
   nd2: {
     key: "nd2",
     label: "Mitochondrial ND2",
     folder: "fasta/nd2",
     note: "Sequences: mitochondrial ND2 coding sequence (~1.0 kb)",
+    description: "ND2 (NADH dehydrogenase subunit 2) is part of Complex I in the mitochondrial electron transport chain. It is one of the faster-evolving mitochondrial protein-coding genes, making it particularly useful for resolving relationships among recently diverged species and for population-level studies.",
   },
   atp6: {
     key: "atp6",
     label: "Mitochondrial ATP6",
     folder: "fasta/atp6",
     note: "Sequences: mitochondrial ATP6 coding sequence (~681 bp)",
+    description: "ATP6 (ATP synthase F0 subunit 6) encodes a component of the mitochondrial ATP synthase complex, which generates the cell\u2019s energy currency. Mutations in this gene have been linked to human mitochondrial diseases. Its moderate evolutionary rate makes it a reliable marker for primate divergence studies.",
   },
   rag1: {
     key: "rag1",
     label: "Nuclear RAG1",
     folder: "fasta/rag1",
     note: "Sequences: nuclear RAG1 coding sequence (typically ~3.1 kb; some partial records)",
+    description: "RAG1 (recombination activating gene 1) is a nuclear gene essential for V(D)J recombination in the immune system \u2014 the process that generates antibody and T-cell receptor diversity. Because it is single-copy, slowly evolving, and found in all jawed vertebrates, it is one of the most important nuclear markers for deep phylogenetic studies.",
   },
   irbp: {
     key: "irbp",
     label: "Nuclear IRBP (RBP3)",
     folder: "fasta/irbp",
     note: "Sequences: nuclear IRBP/RBP3 coding sequence (typically ~3.7 kb; some species may be unavailable)",
+    description: "IRBP (interphotoreceptor retinoid-binding protein, also called RBP3) is a nuclear gene expressed in the retina that transports retinoids between photoreceptor cells and the retinal pigment epithelium. It is widely used in mammalian phylogenetics because its large size and steady evolutionary rate provide strong signal for resolving both deep and recent divergences.",
   },
 };
 
@@ -90,6 +97,8 @@ const resultPanel = document.getElementById("result-content");
 const statusBar  = document.getElementById("status-bar");
 const geneSelect = document.getElementById("gene-select");
 const sequenceNote = document.getElementById("sequence-note");
+const geneInfoTitle = document.getElementById("gene-info-title");
+const geneInfoText  = document.getElementById("gene-info-text");
 
 /* ── Render primate cards ───────────────────────────────────────────── */
 function renderGrid() {
@@ -411,6 +420,8 @@ function renderResult(pA, pB, identity, matches, aligned) {
 
 function updateGeneContext() {
   sequenceNote.innerHTML = `${GENES[selectedGene].note} &bull; Similarity computed via percent identity after global alignment`;
+  geneInfoTitle.textContent = GENES[selectedGene].label;
+  geneInfoText.textContent = GENES[selectedGene].description;
 }
 
 /* ── Init ────────────────────────────────────────────────────────────── */
