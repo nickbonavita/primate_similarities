@@ -2,19 +2,19 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --bg:          #f0f2f5;
-  --bg-subtle:   #e8eaef;
+  --bg:          #f0f0f0;
+  --bg-subtle:   #e6e6e6;
   --surface:     #ffffff;
-  --surface-2:   #f5f6f8;
+  --surface-2:   #f5f5f5;
   --card:        rgba(255, 255, 255, 0.85);
   --border:      rgba(0, 0, 0, 0.08);
-  --border-hover:rgba(0, 120, 90, 0.2);
-  --accent:      #0fa87a;
-  --accent-mid:  #3b8ef7;
-  --accent-dim:  rgba(15, 168, 122, 0.1);
-  --accent2:     #5c6fff;
-  --accent2-dim: rgba(92, 111, 255, 0.08);
-  --gradient:    linear-gradient(135deg, #0fa87a 0%, #3b8ef7 50%, #5c6fff 100%);
+  --border-hover:rgba(80, 80, 80, 0.25);
+  --accent:      #1a1a1a;
+  --accent-mid:  #5a5a5a;
+  --accent-dim:  rgba(26, 26, 26, 0.09);
+  --accent2:     #7a7a7a;
+  --accent2-dim: rgba(100, 100, 100, 0.08);
+  --gradient:    linear-gradient(135deg, #111111 0%, #555555 50%, #999999 100%);
   --text:        #1a2332;
   --text-bright: #0d1520;
   --muted:       #6b7a90;
@@ -24,12 +24,12 @@
   --transition:  0.22s cubic-bezier(.4,0,.2,1);
   --shadow:      0 4px 20px rgba(0, 0, 0, 0.06);
   --shadow-lg:   0 8px 40px rgba(0, 0, 0, 0.08);
-  --shadow-glow: 0 0 40px rgba(15, 168, 122, 0.06);
+  --shadow-glow: 0 0 40px rgba(0, 0, 0, 0.05);
 }
 
 html { font-size: 16px; scroll-behavior: smooth; }
 body {
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-family: 'IBM Plex Sans', system-ui, -apple-system, sans-serif;
   background: var(--bg);
   color: var(--text);
   min-height: 100vh;
@@ -51,13 +51,13 @@ body {
 .bg-glow--1 {
   width: 700px; height: 700px;
   top: -250px; left: -200px;
-  background: radial-gradient(circle, rgba(15, 168, 122, 0.1), transparent 70%);
+  background: radial-gradient(circle, rgba(80, 80, 80, 0.07), transparent 70%);
   animation: drift 18s ease-in-out infinite alternate;
 }
 .bg-glow--2 {
   width: 600px; height: 600px;
   bottom: -150px; right: -150px;
-  background: radial-gradient(circle, rgba(92, 111, 255, 0.08), transparent 70%);
+  background: radial-gradient(circle, rgba(120, 120, 120, 0.05), transparent 70%);
   animation: drift 22s ease-in-out infinite alternate-reverse;
 }
 @keyframes drift {
@@ -166,7 +166,7 @@ main {
 .controls-bar select:focus-visible {
   outline: none;
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px var(--accent-dim), 0 2px 8px rgba(15, 168, 122, 0.06);
+  box-shadow: 0 0 0 3px var(--accent-dim), 0 2px 8px rgba(0, 0, 0, 0.06);
 }
 
 .status-bar {
@@ -181,8 +181,8 @@ main {
 }
 .status-bar.two-selected {
   color: var(--accent);
-  border-color: rgba(15, 168, 122, 0.2);
-  background: rgba(15, 168, 122, 0.04);
+  border-color: rgba(80, 80, 80, 0.2);
+  background: rgba(50, 50, 50, 0.04);
 }
 
 .primate-grid {
@@ -219,7 +219,7 @@ main {
   position: absolute;
   inset: 0;
   border-radius: var(--radius);
-  background: radial-gradient(ellipse at 50% 0%, rgba(59, 142, 247, 0.05) 0%, transparent 70%);
+  background: radial-gradient(ellipse at 50% 0%, rgba(80, 80, 80, 0.05) 0%, transparent 70%);
   opacity: 0;
   transition: opacity var(--transition);
   pointer-events: none;
@@ -228,16 +228,16 @@ main {
 .primate-card:hover {
   border-color: var(--border-hover);
   transform: translateY(-4px);
-  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(15, 168, 122, 0.06);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(80, 80, 80, 0.06);
 }
 .primate-card.selected {
   border-color: var(--accent);
   background: var(--accent-dim);
-  box-shadow: 0 0 0 2px var(--accent-dim), 0 8px 28px rgba(15, 168, 122, 0.12);
+  box-shadow: 0 0 0 2px var(--accent-dim), 0 8px 28px rgba(0, 0, 0, 0.12);
 }
 .primate-card.selected::before {
   opacity: 1;
-  background: radial-gradient(ellipse at 50% 0%, rgba(15, 168, 122, 0.07) 0%, transparent 70%);
+  background: radial-gradient(ellipse at 50% 0%, rgba(80, 80, 80, 0.07) 0%, transparent 70%);
 }
 .primate-card.unavailable {
   opacity: 0.35;
@@ -308,7 +308,7 @@ main {
   position: absolute;
   top: 0.5rem;
   right: 0.5rem;
-  background: rgba(15, 168, 122, 0.14);
+  background: rgba(26, 26, 26, 0.12);
   width: 24px;
   height: 24px;
   display: flex;
@@ -405,7 +405,7 @@ main {
 }
 .dna-icon {
   font-size: 2.8rem;
-  filter: drop-shadow(0 0 10px rgba(0, 149, 110, 0.15));
+  filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.10));
 }
 
 /* result content */
@@ -427,7 +427,7 @@ main {
   border-radius: 50%;
   background: var(--gradient);
   flex-shrink: 0;
-  box-shadow: 0 0 8px rgba(15, 168, 122, 0.2);
+  box-shadow: 0 0 8px rgba(80, 80, 80, 0.2);
 }
 .species-name { font-weight: 600; color: var(--text-bright); }
 .species-sci  { color: var(--muted); font-style: italic; font-size: 0.8rem; }
@@ -455,7 +455,7 @@ main {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  filter: drop-shadow(0 2px 8px rgba(15, 168, 122, 0.12));
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.10));
 }
 .similarity-suffix {
   font-size: 1.5rem;
@@ -471,7 +471,7 @@ main {
 
 /* progress bar */
 .progress-wrap {
-  background: rgba(100, 130, 200, 0.1);
+  background: rgba(100, 100, 100, 0.1);
   border-radius: 999px;
   height: 7px;
   overflow: hidden;
@@ -483,7 +483,7 @@ main {
   border-radius: 999px;
   background: var(--gradient);
   transition: width 0.7s cubic-bezier(.4,0,.2,1);
-  box-shadow: 0 0 10px rgba(15, 168, 122, 0.18);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.12);
   position: relative;
 }
 
@@ -491,7 +491,7 @@ main {
 .relationship {
   display: inline-block;
   background: linear-gradient(135deg, var(--accent-dim) 0%, var(--accent2-dim) 100%);
-  border: 1px solid rgba(15, 168, 122, 0.15);
+  border: 1px solid rgba(80, 80, 80, 0.15);
   color: var(--accent);
   border-radius: 999px;
   font-size: 0.76rem;
