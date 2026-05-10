@@ -319,10 +319,10 @@ function showError(msg) {
 }
 
 /* ── FASTA loading & parsing ────────────────────────────────────────── */
-async function loadSequence(id) {
-  const cacheKey = `${selectedGene}:${id}`;
+async function loadSequence(id, gene = selectedGene) {
+  const cacheKey = `${gene}:${id}`;
   if (sequenceCache[cacheKey]) return sequenceCache[cacheKey];
-  const url = `${GENES[selectedGene].folder}/${id}.fasta`;
+  const url = `${GENES[gene].folder}/${id}.fasta`;
   const resp = await fetch(url);
   if (!resp.ok) throw new Error(`Could not fetch ${url} (${resp.status})`);
   const text = await resp.text();
@@ -506,6 +506,511 @@ function updateGeneContext() {
   geneInfoText.textContent = GENES[selectedGene].description;
 }
 
+/* ── Phylogenetic tree ───────────────────────────────────────────────── */
+
+const FAMILY_COLORS = {
+  Hominidae:        "#1a1a1a",
+  Hylobatidae:      "#4a6fa5",
+  Cercopithecidae:  "#2e7d4f",
+  Platyrrhini:      "#7c3d8a",
+  Strepsirrhini:    "#8a6218",
+  Tarsiidae:        "#1a5f8a",
+};
+
+const FAMILY_LABELS = {
+  Hominidae:        "Hominidae (Great Apes & Humans)",
+  Hylobatidae:      "Hylobatidae (Gibbons)",
+  Cercopithecidae:  "Cercopithecidae (Old World Monkeys)",
+  Platyrrhini:      "Platyrrhini (New World Monkeys)",
+  Strepsirrhini:    "Strepsirrhini (Lemurs & Aye-aye)",
+  Tarsiidae:        "Tarsiidae (Tarsiers)",
+};
+
+function getPrimateFamily(id) {
+  const tax = TAXONOMY[id];
+  if (!tax) return "Hominidae";
+  if (tax.infraorder === "Tarsiiformes") return "Tarsiidae";
+  if (tax.suborder === "Strepsirrhini")  return "Strepsirrhini";
+  if (tax.parvorder === "Platyrrhini")   return "Platyrrhini";
+  if (tax.family === "Cercopithecidae")  return "Cercopithecidae";
+  if (tax.family === "Hylobatidae")      return "Hylobatidae";
+  return "Hominidae";
+}
+
+/** UPGMA clustering. distMatrix[i][j] = distance (e.g. 100 – %identity). */
+function buildUPGMA(primates, distMatrix) {
+  let clusters = primates.map((p, i) => ({
+    leaves: [i],
+    height: 0,
+    node: { leaf: true, label: p.common, species: p.species, primateId: p.id },
+  }));
+  let D = distMatrix.map(row => Float64Array.from(row));
+
+  while (clusters.length > 1) {
+    const m = clusters.length;
+    let minD = Infinity, mi = 0, mj = 1;
+    for (let i = 0; i < m; i++) {
+      for (let j = i + 1; j < m; j++) {
+        if (D[i][j] < minD) { minD = D[i][j]; mi = i; mj = j; }
+      }
+    }
+
+    const height = minD / 2;
+    const sI = clusters[mi].leaves.length;
+    const sJ = clusters[mj].leaves.length;
+
+    const merged = {
+      leaves: [...clusters[mi].leaves, ...clusters[mj].leaves],
+      height,
+      node: {
+        leaf: false, height,
+        children: [clusters[mi].node, clusters[mj].node],
+        childHeights: [clusters[mi].height, clusters[mj].height],
+      },
+    };
+
+    const keep = [];
+    const newClusters = [];
+    for (let i = 0; i < m; i++) {
+      if (i !== mi && i !== mj) { keep.push(i); newClusters.push(clusters[i]); }
+    }
+    newClusters.push(merged);
+
+    const nm = newClusters.length;
+    const newD = Array.from({ length: nm }, () => new Float64Array(nm));
+    for (let a = 0; a < keep.length; a++) {
+      for (let b = 0; b < keep.length; b++) newD[a][b] = D[keep[a]][keep[b]];
+      const d = (D[keep[a]][mi] * sI + D[keep[a]][mj] * sJ) / (sI + sJ);
+      newD[a][nm - 1] = d;
+      newD[nm - 1][a] = d;
+    }
+    clusters = newClusters;
+    D = newD;
+  }
+  return clusters[0].node;
+}
+
+function renderTreeSVG(rootNode, svgEl) {
+  const NS = "http://www.w3.org/2000/svg";
+  const mk = (tag, attrs = {}, text = null) => {
+    const el = document.createElementNS(NS, tag);
+    Object.entries(attrs).forEach(([k, v]) => el.setAttribute(k, v));
+    if (text !== null) el.textContent = text;
+    return el;
+  };
+  svgEl.innerHTML = "";
+
+  // Collect leaves in traversal order
+  const leaves = [];
+  (function collect(node) {
+    if (node.leaf) { leaves.push(node); return; }
+    node.children.forEach(collect);
+  })(rootNode);
+
+  const leafSpacing = 32;
+  const marginTop    = 10;
+  const marginBottom = 52;
+  const marginLeft   = 14;
+  const plotWidth    = 380;
+  const labelSpace   = 178;
+  const svgH = leaves.length * leafSpacing + marginTop + marginBottom;
+  const svgW = marginLeft + plotWidth + labelSpace;
+
+  svgEl.setAttribute("width",   svgW);
+  svgEl.setAttribute("height",  svgH);
+  svgEl.setAttribute("viewBox", `0 0 ${svgW} ${svgH}`);
+
+  const rootHeight = rootNode.height;
+  function xPos(h) {
+    return marginLeft + plotWidth * (1 - h / rootHeight);
+  }
+
+  // Assign y to leaves, x to all nodes
+  leaves.forEach((leaf, i) => {
+    leaf._y = marginTop + (i + 0.5) * leafSpacing;
+    leaf._x = xPos(0);
+  });
+  (function setPos(node) {
+    if (node.leaf) return;
+    node.children.forEach(setPos);
+    node._x = xPos(node.height);
+    node._y = (node.children[0]._y + node.children[1]._y) / 2;
+  })(rootNode);
+
+  // Alternating row stripes
+  leaves.forEach((leaf, i) => {
+    if (i % 2 === 0) {
+      svgEl.appendChild(mk("rect", {
+        x: 0, y: marginTop + i * leafSpacing,
+        width: svgW, height: leafSpacing,
+        fill: "rgba(0,0,0,0.018)", rx: 2,
+      }));
+    }
+  });
+
+  // Dashed guide lines from tip to label
+  leaves.forEach(leaf => {
+    svgEl.appendChild(mk("line", {
+      x1: leaf._x + 2, y1: leaf._y,
+      x2: leaf._x + 8, y2: leaf._y,
+      stroke: "rgba(0,0,0,0.08)", "stroke-width": "0.8",
+      "stroke-dasharray": "2,3",
+    }));
+  });
+
+  // Draw branches (vertical connectors and horizontal branches)
+  (function drawBranches(node) {
+    if (node.leaf) return;
+    const [c0, c1] = node.children;
+    // Vertical connector between children
+    svgEl.appendChild(mk("line", {
+      x1: node._x, y1: c0._y, x2: node._x, y2: c1._y,
+      stroke: "#ccc", "stroke-width": "1.5", "stroke-linecap": "round",
+    }));
+    // Horizontal branch to each child
+    for (const child of node.children) {
+      const color = child.leaf
+        ? (FAMILY_COLORS[getPrimateFamily(child.primateId)] || "#999")
+        : "#ccc";
+      svgEl.appendChild(mk("line", {
+        x1: node._x, y1: child._y, x2: child._x, y2: child._y,
+        stroke: color,
+        "stroke-width": child.leaf ? "2" : "1.5",
+        "stroke-linecap": "round",
+      }));
+    }
+    node.children.forEach(drawBranches);
+  })(rootNode);
+
+  // Root stub
+  svgEl.appendChild(mk("line", {
+    x1: marginLeft - 8, y1: rootNode._y, x2: rootNode._x, y2: rootNode._y,
+    stroke: "#ccc", "stroke-width": "1.5", "stroke-linecap": "round",
+  }));
+
+  // Leaf dots + labels
+  for (const leaf of leaves) {
+    const family = getPrimateFamily(leaf.primateId);
+    const color  = FAMILY_COLORS[family] || "#555";
+
+    svgEl.appendChild(mk("circle", {
+      cx: leaf._x + 4, cy: leaf._y, r: 4.5,
+      fill: color, stroke: "#fff", "stroke-width": "1",
+    }));
+
+    // Common name
+    svgEl.appendChild(mk("text", {
+      x: leaf._x + 14,
+      y: leaf._y - 3,
+      "font-size": "11.5",
+      "font-weight": "600",
+      "font-family": "IBM Plex Sans, system-ui, sans-serif",
+      fill: color,
+    }, leaf.label));
+
+    // Species name (italic, below)
+    svgEl.appendChild(mk("text", {
+      x: leaf._x + 14,
+      y: leaf._y + 10,
+      "font-size": "9",
+      "font-style": "italic",
+      "font-family": "IBM Plex Sans, system-ui, sans-serif",
+      fill: "#aaa",
+    }, leaf.species));
+  }
+
+  // Scale bar
+  const scaleBarPct = parseFloat((rootHeight * 0.25).toPrecision(1));
+  const scaleBarW   = (scaleBarPct / rootHeight) * plotWidth;
+  const barY = svgH - 22;
+  const barX = marginLeft;
+
+  svgEl.appendChild(mk("line", {
+    x1: barX, y1: barY, x2: barX + scaleBarW, y2: barY,
+    stroke: "#bbb", "stroke-width": "2", "stroke-linecap": "round",
+  }));
+  svgEl.appendChild(mk("line", {
+    x1: barX, y1: barY - 4, x2: barX, y2: barY + 4,
+    stroke: "#bbb", "stroke-width": "1.5",
+  }));
+  svgEl.appendChild(mk("line", {
+    x1: barX + scaleBarW, y1: barY - 4, x2: barX + scaleBarW, y2: barY + 4,
+    stroke: "#bbb", "stroke-width": "1.5",
+  }));
+  svgEl.appendChild(mk("text", {
+    x: barX + scaleBarW / 2, y: barY + 14,
+    "font-size": "10", fill: "#aaa", "text-anchor": "middle",
+    "font-family": "IBM Plex Sans, system-ui, sans-serif",
+  }, `${scaleBarPct}% divergence`));
+}
+
+function renderTreeLegend(legendEl) {
+  legendEl.innerHTML = "";
+  const seen = new Set(PRIMATES.map(p => getPrimateFamily(p.id)));
+  seen.forEach(family => {
+    const color = FAMILY_COLORS[family] || "#555";
+    const item  = document.createElement("span");
+    item.className = "tree-legend-item";
+    item.innerHTML = `<span class="tree-legend-dot" style="background:${color}"></span>${FAMILY_LABELS[family] || family}`;
+    legendEl.appendChild(item);
+  });
+}
+
+let treeVisible = false;
+const treeSection = document.getElementById("tree-section");
+const treeBtn     = document.getElementById("tree-btn");
+
+treeBtn.addEventListener("click", () => {
+  treeVisible = !treeVisible;
+  treeBtn.setAttribute("aria-pressed", String(treeVisible));
+  treeSection.hidden = !treeVisible;
+  if (treeVisible) {
+    treeSection.scrollIntoView({ behavior: "smooth", block: "start" });
+    buildTreeView(selectedGene);
+  }
+});
+
+async function buildTreeView(gene) {
+  const container = document.getElementById("tree-container");
+  container.innerHTML = `<p class="heatmap-loading">Loading sequences and building tree…</p>`;
+
+  await ensureGeneAvailability(gene);
+  const availability = availabilityCache[gene] || {};
+  const candidates = PRIMATES.filter(p => availability[p.id] !== false);
+
+  const seqMap = {};
+  await Promise.all(candidates.map(async p => {
+    try { seqMap[p.id] = await loadSequence(p.id, gene); } catch { /* skip */ }
+  }));
+
+  if (gene !== selectedGene || !treeVisible) return;
+
+  const primates = candidates.filter(p => seqMap[p.id]);
+  const n = primates.length;
+
+  // Build pairwise distance matrix (distance = 100 – %identity), reusing cache
+  const distMatrix = Array.from({ length: n }, () => new Float64Array(n));
+  for (let i = 0; i < n; i++) {
+    for (let j = i + 1; j < n; j++) {
+      const key = `${gene}:${primates[i].id}:${primates[j].id}`;
+      let identity;
+      if (heatmapPairCache[key] !== undefined) {
+        identity = heatmapPairCache[key];
+      } else {
+        const a = seqMap[primates[i].id].slice(0, 1200);
+        const b = seqMap[primates[j].id].slice(0, 1200);
+        identity = percentIdentity(a, b).identity;
+        heatmapPairCache[key] = identity;
+      }
+      const dist = 100 - identity;
+      distMatrix[i][j] = dist;
+      distMatrix[j][i] = dist;
+    }
+  }
+
+  if (gene !== selectedGene || !treeVisible) return;
+
+  const rootNode = buildUPGMA(primates, distMatrix);
+
+  container.innerHTML = "";
+  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  svg.id = "tree-svg";
+  container.appendChild(svg);
+  renderTreeSVG(rootNode, svg);
+  renderTreeLegend(document.getElementById("tree-legend"));
+}
+
+/* ── Heatmap ──────────────────────────────────────────────────────────── */
+let heatmapVisible = false;
+const heatmapPairCache = {};  // "gene:idA:idB" → identity
+
+const heatmapSection = document.getElementById("heatmap-section");
+const heatmapBtn     = document.getElementById("heatmap-btn");
+const heatmapSubtitle = document.getElementById("heatmap-subtitle");
+
+heatmapBtn.addEventListener("click", () => {
+  heatmapVisible = !heatmapVisible;
+  heatmapBtn.setAttribute("aria-pressed", String(heatmapVisible));
+  heatmapSection.hidden = !heatmapVisible;
+  if (heatmapVisible) {
+    heatmapSection.scrollIntoView({ behavior: "smooth", block: "start" });
+    buildHeatmap(selectedGene);
+  }
+});
+
+async function buildHeatmap(gene) {
+  const container = document.getElementById("heatmap-container");
+  container.innerHTML = "";
+
+  // Work out which primates have sequences for this gene
+  await ensureGeneAvailability(gene);
+  const availability = availabilityCache[gene] || {};
+  const candidates = PRIMATES.filter(p => availability[p.id] !== false);
+  const totalPairs = (candidates.length * (candidates.length - 1)) / 2;
+
+  // Show progress placeholder
+  container.innerHTML = `
+    <p class="heatmap-loading" id="heatmap-progress-msg">
+      Loading sequences and computing ${totalPairs} pairs…<br/>
+      <small id="heatmap-progress-count">0 / ${totalPairs} done</small>
+    </p>`;
+
+  // Load all sequences in parallel
+  const seqMap = {};
+  await Promise.all(candidates.map(async p => {
+    try { seqMap[p.id] = await loadSequence(p.id, gene); }
+    catch { /* skip */ }
+  }));
+
+  // Re-check if gene changed while loading
+  if (gene !== selectedGene || !heatmapVisible) return;
+
+  const primates = candidates.filter(p => seqMap[p.id]);
+  const n = primates.length;
+
+  // Compute pairwise similarities, yielding to UI periodically
+  const results = {};
+  primates.forEach(p => { results[p.id] = {}; });
+
+  let computed = 0;
+  const actualPairs = (n * (n - 1)) / 2;
+  const progressCount = document.getElementById("heatmap-progress-count");
+
+  for (let i = 0; i < n; i++) {
+    for (let j = i; j < n; j++) {
+      const idA = primates[i].id, idB = primates[j].id;
+      if (i === j) { results[idA][idB] = 100; continue; }
+
+      const key = `${gene}:${idA}:${idB}`;
+      let val;
+      if (heatmapPairCache[key] !== undefined) {
+        val = heatmapPairCache[key];
+      } else {
+        // Truncate to 1200 bp for speed — still gives >99.9% accurate similarity
+        const a = seqMap[idA].slice(0, 1200);
+        const b = seqMap[idB].slice(0, 1200);
+        val = percentIdentity(a, b).identity;
+        heatmapPairCache[key] = val;
+      }
+      results[idA][idB] = val;
+      results[idB][idA] = val;
+
+      computed++;
+      if (computed % 8 === 0 || computed === actualPairs) {
+        if (progressCount) progressCount.textContent = `${computed} / ${actualPairs} done`;
+        await new Promise(r => setTimeout(r, 0)); // yield to browser
+      }
+    }
+  }
+
+  if (gene !== selectedGene || !heatmapVisible) return;
+  renderHeatmapTable(primates, results, gene);
+}
+
+function renderHeatmapTable(primates, results, gene) {
+  // Find actual min/max (excluding diagonal) to anchor the color scale
+  let minVal = 100, maxVal = 0;
+  for (const p of primates) {
+    for (const q of primates) {
+      if (p.id !== q.id) {
+        const v = results[p.id][q.id];
+        if (v < minVal) minVal = v;
+        if (v > maxVal) maxVal = v;
+      }
+    }
+  }
+  const range = maxVal - minVal || 1;
+
+  function cellColor(pct) {
+    // Interpolate #e8e8e8 (low) → #1a1a1a (high)
+    const t = (pct - minVal) / range;
+    const r = Math.round(232 - t * (232 - 26));
+    const g = Math.round(232 - t * (232 - 26));
+    const b = Math.round(232 - t * (232 - 26));
+    return { bg: `rgb(${r},${g},${b})`, light: t < 0.55 };
+  }
+
+  const container = document.getElementById("heatmap-container");
+  container.innerHTML = "";
+
+  // Legend
+  const note = gene !== "cytb" ? ` (first 1,200 bp used for speed)` : "";
+  const legend = document.createElement("div");
+  legend.className = "heatmap-legend";
+  legend.innerHTML = `
+    <span class="heatmap-legend-label">${minVal.toFixed(1)}%</span>
+    <div class="heatmap-legend-bar"></div>
+    <span class="heatmap-legend-label">${maxVal.toFixed(1)}%</span>
+    <span class="heatmap-legend-hint">${GENES[gene].label}${note} &bull; Click a cell to compare that pair above</span>
+  `;
+  container.appendChild(legend);
+
+  // Table
+  const table = document.createElement("table");
+  table.className = "heatmap-table";
+  table.setAttribute("role", "grid");
+  table.setAttribute("aria-label", "Primate DNA similarity matrix");
+
+  // Header row with rotated labels
+  const thead = table.createTHead();
+  const headerRow = thead.insertRow();
+  const corner = document.createElement("th");
+  corner.setAttribute("aria-hidden", "true");
+  headerRow.appendChild(corner);
+  for (const p of primates) {
+    const th = document.createElement("th");
+    th.className = "heatmap-col-header";
+    th.scope = "col";
+    th.title = p.species;
+    th.innerHTML = `<span class="heatmap-label-rotated">${p.common}</span>`;
+    headerRow.appendChild(th);
+  }
+
+  // Data rows
+  const tbody = table.createTBody();
+  for (const pA of primates) {
+    const row = tbody.insertRow();
+    const rh = document.createElement("th");
+    rh.className = "heatmap-row-header";
+    rh.scope = "row";
+    rh.title = pA.species;
+    rh.textContent = pA.common;
+    row.appendChild(rh);
+
+    for (const pB of primates) {
+      const cell = row.insertCell();
+      const isSelf = pA.id === pB.id;
+
+      if (isSelf) {
+        cell.className = "heatmap-cell heatmap-cell--self";
+        cell.setAttribute("aria-label", `${pA.common} (self-comparison)`);
+      } else {
+        const val = results[pA.id][pB.id];
+        const { bg, light } = cellColor(val);
+        cell.className = "heatmap-cell";
+        cell.style.background = bg;
+        cell.style.color = light ? "#555" : "#fff";
+        cell.textContent = val.toFixed(1);
+        cell.setAttribute("role", "button");
+        cell.setAttribute("tabindex", "0");
+        cell.setAttribute("aria-label", `${pA.common} vs ${pB.common}: ${val.toFixed(1)}%`);
+        const selectPair = () => {
+          selected.length = 0;
+          selected.push(pA.id, pB.id);
+          updateUI();
+          document.querySelector("main").scrollIntoView({ behavior: "smooth" });
+        };
+        cell.addEventListener("click", selectPair);
+        cell.addEventListener("keydown", e => {
+          if (e.key === "Enter" || e.key === " ") { e.preventDefault(); selectPair(); }
+        });
+      }
+    }
+  }
+
+  container.appendChild(table);
+}
+
 /* ── Init ────────────────────────────────────────────────────────────── */
 geneSelect.addEventListener("change", () => {
   const geneKey = geneSelect.value;
@@ -515,6 +1020,8 @@ geneSelect.addEventListener("change", () => {
   ensureGeneAvailability(geneKey).then(() => {
     if (selectedGene === geneKey) updateUI();
   });
+  if (heatmapVisible) buildHeatmap(geneKey);
+  if (treeVisible) buildTreeView(geneKey);
 });
 
 async function initApp() {

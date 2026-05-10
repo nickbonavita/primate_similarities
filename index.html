@@ -44,6 +44,14 @@
           <option value="cytc">Nuclear Cytochrome c / CYCS (~318 bp)</option>
         </select>
       </div>
+        <button id="heatmap-btn" class="heatmap-toggle-btn" aria-pressed="false" title="Show full similarity matrix for all primates">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="1" y="1" width="6" height="6" rx="1.5" fill="currentColor" opacity="0.9"/><rect x="9" y="1" width="6" height="6" rx="1.5" fill="currentColor" opacity="0.5"/><rect x="1" y="9" width="6" height="6" rx="1.5" fill="currentColor" opacity="0.5"/><rect x="9" y="9" width="6" height="6" rx="1.5" fill="currentColor" opacity="0.2"/></svg>
+          Heatmap
+        </button>
+        <button id="tree-btn" class="heatmap-toggle-btn" aria-pressed="false" title="Show phylogenetic tree for the selected gene">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><line x1="2" y1="8" x2="8" y2="8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="8" y1="4" x2="14" y2="4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="8" y1="8" x2="14" y2="8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="8" y1="12" x2="14" y2="12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="8" y1="4" x2="8" y2="12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          Phylo Tree
+        </button>
       <div id="status-bar" class="status-bar" aria-live="polite">
         Click a primate to select it, then click another to compare.
       </div>
@@ -64,6 +72,31 @@
       </div>
     </aside>
   </main>
+
+  <section id="heatmap-section" class="heatmap-section" hidden aria-label="All-species similarity heatmap">
+    <div class="heatmap-inner">
+      <div class="heatmap-header">
+        <h2 class="heatmap-title">All-Species Similarity Matrix</h2>
+        <p class="heatmap-subtitle" id="heatmap-subtitle">Percent identity across all primates for the selected gene. Click any cell to compare that pair.</p>
+      </div>
+      <div id="heatmap-container" class="heatmap-container">
+        <p class="heatmap-empty">Loading…</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="tree-section" class="heatmap-section" hidden aria-label="Phylogenetic tree">
+    <div class="heatmap-inner">
+      <div class="heatmap-header">
+        <h2 class="heatmap-title">Phylogenetic Tree</h2>
+        <p class="heatmap-subtitle">UPGMA dendrogram built from pairwise percent-identity distances for the selected gene. Branch lengths are proportional to sequence divergence.</p>
+      </div>
+      <div id="tree-container" class="tree-container">
+        <p class="heatmap-empty">Click &ldquo;Phylo Tree&rdquo; to build the tree.</p>
+      </div>
+      <div id="tree-legend" class="tree-legend"></div>
+    </div>
+  </section>
 
   <footer>
     <p id="sequence-note">Sequences: partial mitochondrial cytochrome&nbsp;b gene (~405&nbsp;bp) &bull;
